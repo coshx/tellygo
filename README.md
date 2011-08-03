@@ -10,4 +10,5 @@ TellyGo is an experiment in social dynamics for video chat. It emphasizes both p
  * Flex for video chat
  * ? for flex <-> Rails communication
  * Rails
+ * MongoDB
  
