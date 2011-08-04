@@ -18,6 +18,7 @@ gem 'jquery-rails'
 gem 'haml'
 gem 'cancan'
 gem 'devise'
+gem 'thin'
 
 group :test do
   # Pretty printed test output
