@@ -1,0 +1,24 @@
+@import "tellygo";
+@import "compass/css3/border-radius";
+@import "compass/typography/links";
+
+#info {
+  width: 100%;
+	@include border-radius(4px, 4px);
+	color: $gray;
+	border: 1px solid $brown;
+
+  .system_info {
+			position: relative;
+			left: 1em;
+	}
+
+  .user {
+			position: absolute;
+			right: 1em;
+			
+			a {
+					@include unstyled-link;
+			}
+  }
+}

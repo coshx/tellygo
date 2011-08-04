@@ -1,0 +1,14 @@
+!!! 5
+%html
+  %head
+    %title TellyGo
+    = stylesheet_link_tag 'application'
+    = javascript_include_tag 'application'
+
+  %body
+    #root
+      = render 'shared/header'
+      #content
+        = yield
+      #root_footer
+    = render 'shared/footer'

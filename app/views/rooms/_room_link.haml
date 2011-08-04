@@ -1,0 +1,5 @@
+=link_to(room) do
+  .room_link
+    %span.name= room.name
+    %span.description= room.description
+    %span.count= "(#{room.users.size} members)"

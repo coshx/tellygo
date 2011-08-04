@@ -1,9 +1,12 @@
 Tellygo::Application.routes.draw do
+  devise_for :users
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
-  resource :users
-  root :to => 'users#index'
+  resources :users
+  resources :rooms
+  root :to => 'rooms#index'
   
 
   # Sample of regular route:

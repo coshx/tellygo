@@ -1,0 +1,47 @@
+@import "tellygo";
+@import "compass/css3/border-radius";
+@import "compass/css3/opacity";
+@import "compass/typography/links";
+@import "compass/layout/stretching";
+
+#room_list {
+		font-family: Helvetica;
+		h1 {
+				color: adjust-lightness($brown, 30%);
+		}
+		@include stretch-x(48px, 48px);
+
+    a {
+				@include unstyled-link;
+    }
+}
+
+.room_link {
+		border: 2px solid $brown;
+		@include border-radius(4px, 4px);
+		margin: 1em;
+		padding-left: 0.6em;
+		display: block;
+		
+		.name {
+				color: $brown;
+				font-size: 1.3em;
+		}
+		.description {
+				color: adjust-lightness($brown, 5%);
+				font-size: 0.9em;
+				position: absolute;
+				left: 256px;
+				padding-top: 0.3em;
+    }
+    .count {
+				color: $brown;
+				font-size: 0.7em;
+				position: absolute;
+				right: 48px;
+				padding-top: 0.6em;
+    }
+		&:hover {
+				background: adjust-lightness($brown, 50%);
+		}
+}

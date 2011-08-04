@@ -1,0 +1,5 @@
+#room_list
+  %h1 Available Rooms:
+  - @rooms.each do |room|
+    =render :partial => "room_link", :locals => {:room => room}
+        

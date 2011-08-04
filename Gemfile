@@ -8,23 +8,27 @@ group :assets do
   gem 'sass-rails', "~> 3.1.0.rc"
   gem 'coffee-rails', "~> 3.1.0.rc"
   gem 'uglifier'
+  gem 'compass', :git => 'git://github.com/chriseppstein/compass.git', :branch => 'rails31'
+  gem 'compass-rails31'
 end
 
+gem 'mongoid'
+gem 'bson_ext'
 gem 'jquery-rails'
 gem 'haml'
-
-# Use unicorn as the web server
-# gem 'unicorn'
-
-# Deploy with Capistrano
-# gem 'capistrano'
-
-# To use debugger
-# gem 'ruby-debug19', :require => 'ruby-debug'
+gem 'cancan'
+gem 'devise'
 
 group :test do
   # Pretty printed test output
   gem 'rspec-rails'
   gem 'cucumber-rails'
+  gem 'capybara'
   gem 'factory_girl_rails'
+  gem 'database_cleaner'
+  gem 'mongoid-rspec'
+end
+
+group :development do
+  gem 'heroku'
 end

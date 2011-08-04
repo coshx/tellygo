@@ -1,0 +1,5 @@
+@import "compass/layout/sticky-footer";
+
+$brown: #663300;
+$gray: #999999;
+@include sticky-footer(54px)

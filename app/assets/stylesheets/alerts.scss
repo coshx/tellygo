@@ -1,0 +1,32 @@
+@import "compass/css3/border-radius";
+
+$notice-bg-color: #0033cc;
+$warning-bg-color: #cc6600;
+$error-bg-color: #990000;
+$alert-fg-color: #ffffff;
+
+#notices {
+}
+
+@mixin alert($color, $radius: 4px) {
+  @include border-radius($radius, $radius);
+	background: $color;
+	color: $alert-fg-color;
+	height: 1.5em;
+	text-algin: top;
+	padding-left: 0.6em;
+	font-size: 1.3em;
+	padding-top: 0.3em;
+}
+
+.notice {
+  @include alert($notice-bg-color);
+}
+
+.warning {
+	@include alert($warning-bg-color);
+}
+
+.error {
+  @include alert($error-bg-color);
+}
