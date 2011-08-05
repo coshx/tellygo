@@ -1,0 +1,13 @@
+#channel
+  #channel_title
+    %h1= @channel.name
+    %h2= @channel.description
+  
+  #user_list_container
+    %h2 Who's Here?
+    #user_list
+      - @users.each do |user|
+        .user_list_item= user.name
+
+  #tg_screen
+

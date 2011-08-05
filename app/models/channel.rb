@@ -1,4 +1,4 @@
-class Room
+class Channel
   include Mongoid::Document
   include Mongoid::Timestamps
 

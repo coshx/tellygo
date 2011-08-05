@@ -2,4 +2,21 @@
 
 $brown: #663300;
 $gray: #999999;
-@include sticky-footer(54px)
+@include sticky-footer(2em);
+
+
+#content {
+		position: absolute;
+		left: 216px;
+		top: 64px;
+		width: 80%;
+		height: 80%;
+		overflow: auto;
+
+		color: $brown;
+		font-family: Helvetica;
+}
+
+body {
+		overflow: hidden;
+}

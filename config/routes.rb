@@ -5,8 +5,8 @@ Tellygo::Application.routes.draw do
   # first created -> highest priority.
 
   resources :users
-  resources :rooms
-  root :to => 'rooms#index'
+  resources :channels
+  root :to => 'channels#index'
   
 
   # Sample of regular route:

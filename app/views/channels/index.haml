@@ -1,0 +1,5 @@
+#channel_list
+  %h1 Available Channels:
+  - @channels.each do |channel|
+    =render :partial => "channel_link", :locals => {:channel => channel}
+        

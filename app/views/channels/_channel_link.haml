@@ -1,0 +1,5 @@
+=link_to(channel, {:title => "#{channel.description}"}) do
+  .channel_link
+    %span.name= channel.name
+    %span.description= channel.description
+    %span.count= "(#{channel.users.size} members)"
