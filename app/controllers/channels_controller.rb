@@ -15,6 +15,10 @@ class ChannelsController < ApplicationController
       @rubyamf_uri = rubyamf_gateway_url.strip
     end
 
+    # TODO: put this in a configuration somewhere
+    #@rtmp_server = 'rtmp://localhost:5080/TellyGo'
+    @rtmp_server = 'rtmp://demo.metiva.com/metiva'
+
     @users = @channel.users
   end
 

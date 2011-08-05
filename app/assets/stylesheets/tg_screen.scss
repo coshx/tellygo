@@ -5,8 +5,9 @@ $tg-highlight-color: #ccc;
 $tg-bg-color: #333;
 
 #tg_screen {
-		margin-top: 16px;
-		margin-left: 16px;
+/*		margin-top: 16px;*/
+/*		margin-left: 16px;*/
+    margin: 0px 0px 0px 0px;
 		width: 600px;
 		height: 400px;
 		@include background(radial-gradient(25% 25%, $tg-highlight-color 0%, $tg-bg-color 95%));

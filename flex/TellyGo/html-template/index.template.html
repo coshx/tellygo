@@ -20,6 +20,7 @@
              Firefox 3.6 focus border issues.  Initially, don't display flashContent div so it won't show 
              if JavaScript disabled.
         -->
+        <!--
         <style type="text/css" media="screen"> 
             html, body  { height:100%; }
             body { margin:0; padding:0; overflow:auto; text-align:center; 
@@ -27,20 +28,22 @@
             object:focus { outline:none; }
             #flashContent { display:none; }
         </style>
+        -->
         
         <!-- Enable Browser History by replacing useBrowserHistory tokens with two hyphens -->
         <!-- BEGIN Browser History required section ${useBrowserHistory}>
+        <!--
         <link rel="stylesheet" type="text/css" href="history/history.css" />
         <script type="text/javascript" src="history/history.js"></script>
         <!${useBrowserHistory} END Browser History required section -->  
-            
+            -->
         <script type="text/javascript" src="swfobject.js"></script>
         <script type="text/javascript">
             // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. 
             var swfVersionStr = "${version_major}.${version_minor}.${version_revision}";
             // To use express install, set to playerProductInstall.swf, otherwise the empty string. 
             var xiSwfUrlStr = "${expressInstallSwf}";
-            var flashvars = {"channel":"telly-tunnel", "user":"btaitelb", "uri":"http://localhost:3000/rubyamf/gateway.amf?auth_token=ysMasT4W98f5hqmF0mND"};
+            var flashvars = {"channel":"telly-tunnel", "user":"btaitelb", "uri":"http://localhost:3000/rubyamf/gateway.amf?auth_token=ysMasT4W98f5hqmF0mND", "rtmpServer":"rtmp://demo.metiva.com/metiva"};
             var params = {};
             params.quality = "high";
             params.bgcolor = "${bgcolor}";

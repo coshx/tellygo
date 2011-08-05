@@ -2,12 +2,16 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
 			   xmlns:s="library://ns.adobe.com/flex/spark"
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   width="601" height="403" minWidth="600" minHeight="400" creationComplete="onCreationComplete(event)">
+			   width="569" height="403" minWidth="600" minHeight="400" creationComplete="onCreationComplete(event)">
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.Alert;
 			import mx.core.FlexGlobals;
+			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
@@ -26,15 +30,29 @@
 			[Bindable]
 			public var timeLeft:int;
 			
+			[Bindable]
+			public var rtmpServer:String;
+			
 			private var t0:int;
 			private var updateTimeLeftTimer:Timer;
 			private var syncTimeLeftTimer:Timer;
 			
-			private function onCreationComplete(event:FlexEvent):void
+			private var connection:NetConnection;
+			private var video:Video;
+			private var videoWrapper:UIComponent;
+			private var isActor:Boolean = false;
+			private var streamName:String;
+			private var stream:NetStream;
+			
+			
+			private function onCreationComplete(event:FlexEvent) : void
 			{
 				channel = FlexGlobals.topLevelApplication.parameters.channel;
 				user = FlexGlobals.topLevelApplication.parameters.user;
 				uri = FlexGlobals.topLevelApplication.parameters.uri;
+				rtmpServer = FlexGlobals.topLevelApplication.parameters.rtmpServer;
+				
+				setupVideo();
 				
 				getCurrentActor();
 				syncTimeLeft(null);
@@ -47,22 +65,105 @@
 				syncTimeLeftTimer = new Timer(5000);
 				syncTimeLeftTimer.addEventListener(TimerEvent.TIMER, syncTimeLeft);
 				syncTimeLeftTimer.start();
+				
 			}
 			
-			private function getCurrentActor():void
+			private function setupVideo() : void
+			{
+				// for now
+				streamName = channel;
+				
+				resetVideo();
+
+				video = new Video();
+				videoWrapper = new UIComponent();
+				video.width = 320;
+				video.height = 240;
+				videoWrapper.left = 48;
+				videoWrapper.top = 64;
+				videoWrapper.addChild(video);
+				videoWrapper.alpha = 0.6;
+				
+				innerBorderContainer.addElement(videoWrapper);
+				
+			}
+			
+			private function resetVideo() : void
+			{
+				if (connection != null) {
+					connection.close();
+				}
+				
+				connection = new NetConnection();
+				connection.connect(rtmpServer);
+				connection.addEventListener(NetStatusEvent.NET_STATUS, onConnectionNetStatus);
+				connection.client = this;
+			}
+			
+			private function onConnectionNetStatus(event:NetStatusEvent) : void
+			{
+				// did we successfully connect?
+				if (event.info.code == "NetConnection.Connect.Success") {
+					trace("Successful Connection", "Information");
+					if (isActor) {
+						record();
+					} else {
+					 	play();
+					}
+				} else {
+					//Alert.show("Unsuccessful Connection", "Information");
+					resetVideo();
+				}
+			}
+			
+			private function closeStreams() : void
+			{
+				if (stream != null)
+					stream.close();
+			}
+			
+			private function play() : void
+			{
+				closeStreams();
+				stream = new NetStream(connection);
+				stream.client = this;
+				stream.play(streamName);
+				video.attachNetStream(stream);
+			}
+			
+			private function record() : void
+			{
+				closeStreams();
+				stream = new NetStream(connection);
+				stream.client = this;
+				var cam:Camera = Camera.getCamera();
+				var mic:Microphone = Microphone.getMicrophone();
+				stream.attachCamera(cam);
+				stream.attachAudio(mic);
+				stream.publish(streamName);
+				video.attachCamera(cam);
+			}
+			
+			private function getCurrentActor() : void
 			{
 				channelRO.getOperation("current_actor").send(channel);
 			}
-			private function syncTimeLeft(evt:Event):void
+			private function syncTimeLeft(evt:Event) : void
 			{
 				channelRO.getOperation("time_left_ms").send(channel);			
 			}
 			
-			private function onCurrentActorResult(event:ResultEvent):void 
+			private function onCurrentActorResult(event:ResultEvent) : void 
 			{
 				actor = event.result.toString();
+				
+				var wasActor:Boolean = isActor;
+				isActor = (actor == user);
+				if (wasActor != isActor)
+					resetVideo();					
 			}
-			private function onTimeLeftResult(event:ResultEvent):void 
+			
+			private function onTimeLeftResult(event:ResultEvent) : void 
 			{
 				var prevValue:int = timeLeft;
 				timeLeft = parseInt(event.result.toString());
@@ -72,12 +173,12 @@
 				}
 			}
 			
-			private function onFault(event:FaultEvent):void
+			private function onFault(event:FaultEvent) : void
 			{
 				Alert.show(event.fault.faultString, event.fault.name);
 			}
 			
-			private function updateTimeLeft(event:TimerEvent):void
+			private function updateTimeLeft(event:TimerEvent) : void
 			{
 				var t1:int = getTimer();
 				var timeElapsed:int = t1 - t0;
@@ -94,12 +195,12 @@
 			<mx:method name="time_left_ms" result="onTimeLeftResult(event)"/>
 		</mx:RemoteObject>
 	</fx:Declarations>
-	<s:BorderContainer x="0" y="0" width="601" height="403" backgroundAlpha="1.0"
+	<s:BorderContainer x="0" y="0" width="569" height="403" backgroundAlpha="1.0"
 					   backgroundColor="#8F4001" chromeColor="#CCCCCC"
 					   contentBackgroundColor="#636363" dropShadowVisible="false">
 	</s:BorderContainer>
-	<s:BorderContainer x="33" y="25" width="535" height="351" backgroundColor="#444444"
-					   contentBackgroundColor="#C7C7C7">
+	<s:BorderContainer id="innerBorderContainer" x="33" y="25" width="506" height="351"
+					   backgroundColor="#444444" contentBackgroundColor="#C7C7C7">
 		<s:Label id="channelLabel" x="10" y="10" width="513" height="52" color="#F98100"
 				 fontFamily="Verdana" fontSize="36" text="{channel}"/>
 		<s:Label id="actorLabel" x="10" y="291" width="513" height="52" color="#F3F2F1"

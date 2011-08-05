@@ -11,7 +11,7 @@
             var swfVersionStr = "10.2.0";
             // To use express install, set to playerProductInstall.swf, otherwise the empty string. 
             var xiSwfUrlStr = "playerProductInstall.swf";
-            var flashvars = {"channel":"<%=@channel._id%>", "user":"<%= current_user ? current_user._id : 'guest'%>", "uri":"<%= @rubyamf_uri %>"};
+            var flashvars = {"channel":"<%=@channel._id%>", "user":"<%= current_user ? current_user._id : 'guest'%>", "uri":"<%= @rubyamf_uri %>", "rtmpServer":"<%= @rtmp_server %>"};
             var params = {};
             params.quality = "high";
             params.bgcolor = "#ffffff";
