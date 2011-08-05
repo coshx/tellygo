@@ -10,6 +10,9 @@ class ChannelsController < ApplicationController
   def show
     if current_user
       @channel.users << current_user
+      @rubyamf_uri = "#{rubyamf_gateway_url.strip}?auth_token=#{current_user.authentication_token}"
+    else
+      @rubyamf_uri = rubyamf_gateway_url.strip
     end
 
     @users = @channel.users
@@ -18,7 +21,6 @@ class ChannelsController < ApplicationController
   def current_actor
     @channel = Channel.first(:conditions => {:_id => rubyamf_params[0]})
 
-    # TODO: make this atomic (calling new_actor! from time_left_ms as well)
     if @channel.actors.count == 0
       @channel.new_actor!
     end
@@ -34,17 +36,8 @@ class ChannelsController < ApplicationController
 
   def time_left_ms
     @channel = Channel.first(:conditions => {:_id => rubyamf_params[0]})
+    amf = @channel.time_left_ms
 
-    if @channel.actors.length > 0 && @channel.actor_start_time
-      elapsed = (Time.now.utc - @channel.actor_start_time)
-      puts "Elapsed: #{elapsed.to_f}"
-    else
-      elapsed = @channel.actor_allowed_time + 1
-    end
-
-    amf = ((@channel.actor_allowed_time - elapsed) * 1000).floor
-
-    # TODO: make this atomic, along with updating the actor
     if amf <= 0
       @channel.new_actor!
     end
@@ -54,9 +47,9 @@ class ChannelsController < ApplicationController
   private
 
   def leave_channel
-#    if current_user
-#      current_user.channel = nil
-#      current_user.save!
-#    end
+    if current_user
+      current_user.channel_id = nil
+      current_user.save!
+    end
   end
 end

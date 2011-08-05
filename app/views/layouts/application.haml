@@ -4,7 +4,7 @@
     %title TellyGo
     = stylesheet_link_tag 'application'
     = javascript_include_tag 'application'
-
+    = yield :head
   %body
     #root
       = render 'shared/header'

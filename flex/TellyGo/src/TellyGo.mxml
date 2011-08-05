@@ -64,8 +64,9 @@
 			}
 			private function onTimeLeftResult(event:ResultEvent):void 
 			{
+				var prevValue:int = timeLeft;
 				timeLeft = parseInt(event.result.toString());
-				if (timeLeft <= 0 || actor == "")
+				if (timeLeft <= 0 || actor == "" || Math.abs(timeLeft - prevValue) > 3)
 				{
 					getCurrentActor();
 				}
