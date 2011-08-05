@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="601" height="403" minWidth="600" minHeight="400" creationComplete="onCreationComplete(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			[Bindable]
+			public var channel:String;
+			
+			[Bindable]
+			public var user:String;
+			
+			[Bindable]
+			public var uri:String;
+			
+			[Bindable]
+			public var actor:String;
+			
+			[Bindable]
+			public var timeLeft:int;
+			
+			private var t0:int;
+			private var updateTimeLeftTimer:Timer;
+			private var syncTimeLeftTimer:Timer;
+			
+			private function onCreationComplete(event:FlexEvent):void
+			{
+				channel = FlexGlobals.topLevelApplication.parameters.channel;
+				user = FlexGlobals.topLevelApplication.parameters.user;
+				uri = FlexGlobals.topLevelApplication.parameters.uri;
+				
+				getCurrentActor();
+				syncTimeLeft(null);
+				
+				updateTimeLeftTimer = new Timer(500);
+				t0 = getTimer();
+				updateTimeLeftTimer.addEventListener(TimerEvent.TIMER, updateTimeLeft);
+				updateTimeLeftTimer.start();
+				
+				syncTimeLeftTimer = new Timer(5000);
+				syncTimeLeftTimer.addEventListener(TimerEvent.TIMER, syncTimeLeft);
+				syncTimeLeftTimer.start();
+			}
+			
+			private function getCurrentActor():void
+			{
+				channelRO.getOperation("current_actor").send(channel);
+			}
+			private function syncTimeLeft(evt:Event):void
+			{
+				channelRO.getOperation("time_left_ms").send(channel);			
+			}
+			
+			private function onCurrentActorResult(event:ResultEvent):void 
+			{
+				actor = event.result.toString();
+			}
+			private function onTimeLeftResult(event:ResultEvent):void 
+			{
+				timeLeft = parseInt(event.result.toString());
+				if (timeLeft <= 0 || actor == "")
+				{
+					getCurrentActor();
+				}
+			}
+			
+			private function onFault(event:FaultEvent):void
+			{
+				Alert.show(event.fault.faultString, event.fault.name);
+			}
+			
+			private function updateTimeLeft(event:TimerEvent):void
+			{
+				var t1:int = getTimer();
+				var timeElapsed:int = t1 - t0;
+				t0 = t1;
+				timeLeft -= timeElapsed;
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<mx:RemoteObject id="channelRO" destination="rubyamf" endpoint="{uri}" source="ChannelsController" showBusyCursor="false" fault="onFault(event)">
+			<mx:method name="current_actor" result="onCurrentActorResult(event)"/>
+			<mx:method name="time_left_ms" result="onTimeLeftResult(event)"/>
+		</mx:RemoteObject>
+	</fx:Declarations>
+	<s:BorderContainer x="0" y="0" width="601" height="403" backgroundAlpha="1.0"
+					   backgroundColor="#8F4001" chromeColor="#CCCCCC"
+					   contentBackgroundColor="#636363" dropShadowVisible="false">
+	</s:BorderContainer>
+	<s:BorderContainer x="33" y="25" width="535" height="351" backgroundColor="#444444"
+					   contentBackgroundColor="#C7C7C7">
+		<s:Label id="channelLabel" x="10" y="10" width="513" height="52" color="#F98100"
+				 fontFamily="Verdana" fontSize="36" text="{channel}"/>
+		<s:Label id="actorLabel" x="10" y="291" width="513" height="52" color="#F3F2F1"
+				 fontFamily="Verdana" fontSize="36" text='{actor.length > 0 ? actor : "(Off Air)"}' textAlign="center"
+				 verticalAlign="bottom"/>
+		<s:Label id="timeLabel" x="148" y="131" width="238" height="47" backgroundAlpha="1.0"
+				 color="#F67F00" fontFamily="Times New Roman" fontSize="36" text="{ Math.floor(timeLeft/1000).toString()}"
+				 textAlign="center" verticalAlign="middle"/>
+	</s:BorderContainer>
+</s:Application>

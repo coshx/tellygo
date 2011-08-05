@@ -1,16 +1,20 @@
 class User
   include Mongoid::Document
   
-  attr_accessible :name, :email, :password, :password_confirmation, :remember_me
+  attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :authentication_token
 
 
   # Include default devise modules. Others available are:
   # :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+         :recoverable, :rememberable, :trackable, :validatable, 
+         :token_authenticatable
 
-  field :name, type: String
-  field :email,    type: String
+  before_save :ensure_authentication_token
+
+  field :name,  type: String
+  field :email, type: String
+  field :authentication_token, type: String
 
   key :name
 
@@ -18,10 +22,6 @@ class User
   validates_uniqueness_of :name, :email, :case_sensitive => false
 
   belongs_to :channel
-
-  def leave_channel!
-    self.channel_id = nil
-    save!
-  end
+  belongs_to :acting_channel, :class_name => 'Channel', :inverse_of => :actors
 
 end

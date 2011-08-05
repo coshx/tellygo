@@ -1,6 +1,9 @@
 # Be sure to restart your server when you modify this file.
 
-Tellygo::Application.config.session_store :cookie_store, key: '_tellygo_session'
+#require 'mongo_session_store/mongoid'
+#Tellygo::Application.config.session_store :mongoid_store, :key => "_#{Rails.env}_session_id"
+
+Tellygo::Application.config.session_store :cookie_store, key: "_#{Rails.env}_tellygo_session"
 
 # Use the database for sessions instead of the cookie-based default,
 # which shouldn't be used to store highly confidential information

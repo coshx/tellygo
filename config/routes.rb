@@ -1,4 +1,6 @@
 Tellygo::Application.routes.draw do
+  match 'rubyamf/gateway', :to => 'rubyamf#gateway'
+
   devise_for :users
 
   # The priority is based upon order of creation:
